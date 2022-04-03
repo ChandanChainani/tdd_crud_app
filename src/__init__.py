@@ -16,6 +16,6 @@ class Word(db.Model):
 
 @app.route("/words")
 def words():
-    words = []
+    words = [{"id": word.id, "word": word.name} for word in Word.query.all()]
     return jsonify(words)
 
