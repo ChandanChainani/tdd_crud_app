@@ -1,5 +1,5 @@
 import os
-from flask import Flask, jsonify
+from flask import Flask, request, jsonify
 from flask_sqlalchemy import SQLAlchemy
 
 app = Flask(__name__, instance_relative_config=True)
@@ -14,8 +14,16 @@ class Word(db.Model):
     name = db.Column(db.String(60), nullable=False)
 
 
-@app.route("/words")
+@app.route("/words", methods=["GET", "POST"])
 def words():
-    words = [{"id": word.id, "word": word.name} for word in Word.query.all()]
-    return jsonify(words)
+    status, resp = 200, {}
+    if request.method == "GET":
+        resp = [{"id": word.id, "word": word.name} for word in Word.query.all()]
+    if request.method == "POST":
+        data = request.get_json()
+        word = Word(name=data['word'])
+        db.session.add(word)
+        db.session.commit()
+        status, resp = 201, {"id": word.id, "message": "Word added successfully"}
+    return jsonify(resp), status
 
