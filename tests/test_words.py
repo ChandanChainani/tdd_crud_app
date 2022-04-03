@@ -26,3 +26,7 @@ def test_get_word_by_id(client):
     response = client.get("/words")
     response = client.get("/words/" + str(response.json[0]["id"]))
     assert response.status_code == 200
+
+def test_get_word_by_id(client):
+    response = client.get("/words/abc")
+    assert response.status_code == 404
