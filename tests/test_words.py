@@ -21,3 +21,8 @@ def test_update_word(client):
         "word": "Flask App"
     })
     assert response.status_code == 200
+
+def test_get_word_by_id(client):
+    response = client.get("/words")
+    response = client.get("/words/" + str(response.json[0]["id"]))
+    assert response.status_code == 200
