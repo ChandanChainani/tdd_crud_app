@@ -14,11 +14,19 @@ class Word(db.Model):
     name = db.Column(db.String(60), nullable=False)
 
 
-@app.route("/words", methods=["GET", "POST", "PUT", "DELETE"])
-def words():
+@app.route("/words", methods=["GET", "POST", "PUT", "DELETE"], defaults={"word_id": None})
+@app.route("/words/<word_id>", methods=["GET"])
+def words(word_id):
     status, resp = 200, {}
     if request.method == "GET":
-        resp = [{"id": word.id, "word": word.name} for word in Word.query.all()]
+        if word_id:
+            word = Word.query.filter_by(id=word_id).first()
+            resp = {
+                "id": word.id,
+                "name": word.name
+            }
+        else:
+            resp = [{"id": word.id, "word": word.name} for word in Word.query.all()]
     if request.method == "POST":
         data = request.get_json()
         word = Word(name=data['word'])
