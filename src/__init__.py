@@ -15,7 +15,7 @@ class Word(db.Model):
 
 
 @app.route("/words", methods=["GET", "POST", "PUT", "DELETE"], defaults={"word_id": None})
-@app.route("/words/<word_id>", methods=["GET"])
+@app.route("/words/<int:word_id>", methods=["GET"])
 def words(word_id):
     status, resp = 200, {}
     if request.method == "GET":
