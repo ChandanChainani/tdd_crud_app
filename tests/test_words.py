@@ -7,3 +7,4 @@ def test_create_word(client):
         "word": "Flask"
     })
     assert response.status_code == 201
+    assert response.json["id"] > 0
