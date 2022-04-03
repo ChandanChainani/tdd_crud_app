@@ -1,6 +1,7 @@
 import os
 from flask import Flask, request, jsonify
 from flask_sqlalchemy import SQLAlchemy
+from markupsafe import escape
 
 app = Flask(__name__, instance_relative_config=True)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///test.db'
@@ -30,7 +31,7 @@ def words(word_id):
     elif request.method == "POST":
         data = request.get_json()
         if data.get("word") != None:
-            word = Word(name=data['word'])
+            word = Word(name=escape(data['word']))
             db.session.add(word)
             db.session.commit()
             status, resp = 201, {"id": word.id, "message": "Word added successfully"}
@@ -40,7 +41,7 @@ def words(word_id):
         data = request.get_json()
         if data.get("id") != None and  data.get("word") != None:
             word = Word.query.filter_by(id=data['id']).first()
-            word.name = data['word']
+            word.name = escape(data['word'])
             db.session.commit()
             resp = {"id": word.id, "message": "Word updated successfully"}
         else:
