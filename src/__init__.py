@@ -14,7 +14,7 @@ class Word(db.Model):
     name = db.Column(db.String(60), nullable=False)
 
 
-@app.route("/words", methods=["GET", "POST", "DELETE"])
+@app.route("/words", methods=["GET", "POST", "PUT", "DELETE"])
 def words():
     status, resp = 200, {}
     if request.method == "GET":
@@ -25,6 +25,12 @@ def words():
         db.session.add(word)
         db.session.commit()
         status, resp = 201, {"id": word.id, "message": "Word added successfully"}
+    if request.method == "PUT":
+        data = request.get_json()
+        word = Word.query.filter_by(id=data['id']).first()
+        word.name = data['word']
+        db.session.commit()
+        resp = {"id": word.id, "message": "Word updated successfully"}
     if request.method == "DELETE":
         data = request.get_json()
         _id = Word.query.filter(Word.name==data['word']).delete()
