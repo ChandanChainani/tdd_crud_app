@@ -27,19 +27,19 @@ def words(word_id):
             }
         else:
             resp = [{"id": word.id, "word": word.name} for word in Word.query.all()]
-    if request.method == "POST":
+    elif request.method == "POST":
         data = request.get_json()
         word = Word(name=data['word'])
         db.session.add(word)
         db.session.commit()
         status, resp = 201, {"id": word.id, "message": "Word added successfully"}
-    if request.method == "PUT":
+    elif request.method == "PUT":
         data = request.get_json()
         word = Word.query.filter_by(id=data['id']).first()
         word.name = data['word']
         db.session.commit()
         resp = {"id": word.id, "message": "Word updated successfully"}
-    if request.method == "DELETE":
+    elif request.method == "DELETE":
         data = request.get_json()
         _id = Word.query.filter(Word.name==data['word']).delete()
         resp = {"id": _id, "message": "Word deleted successfully"}
